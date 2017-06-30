@@ -1,0 +1,161 @@
+<!doctype>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Lato|Lora|Open+Sans" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script>
+            //ready document
+            $(document).ready(function(){
+            //declare variables
+            var search = document.getElementById('search-box');
+            var icon = document.getElementById('fa');
+            var form = $('#search-form');
+            var searchValue = "";
+            var url ="";
+            
+            //dom interaction
+            //search.addEventListener('input', param);
+            form.submit(searchT)
+            icon.addEventListener('click',searchT)
+            
+            //defining searchT
+            function searchT(event){
+                event.preventDefault();
+                const searchValue = encodeURIComponent(search.value);
+                const url = "https://en.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrsearch="+searchValue+"&prop=extracts&exintro&explaintext&exsentences=1&exlimit=max&callback=?";
+            //console.log(url)
+                $.getJSON(url, apiCall)
+                }
+            // defining data
+            function apiCall(data){
+                //console.log(data.query.pages);
+            var pages = data.query.pages
+            var title = []
+            var extract = []
+            var pageId = []
+            for(var key in pages){
+                title.push(pages[key].title)
+                extract.push(pages[key].extract)
+                pageId.push(pages[key].pageid)
+            }
+                var html = "";
+            for(i = 0; i<title.length; i++){
+                html += '<div class="panel"> <div class="panel-heading"> <h2 class="panel-title"><a target="_blank" href="https://en.wikipedia.org/?curid=';
+                html += pageId[i];
+                html += '">'
+                html += title[i];
+                html += '</a></h2> </div> <div class= "panel-body">';
+                html += extract[i]
+                html += '</div></div><br>' 
+            }
+                $('#result').append(html)
+            }
+            
+            //defining param
+            function param(){
+                document.getElementById('search-query').innerHTML = 'Search Result for: ' + search.value
+            }
+            })
+        </script>
+        <style>
+            body{
+            padding: 0px;
+            margin: 0px;
+            background-color:hsl(206, 68%, 21%);
+            color:white;
+            }
+            .container{
+            width:100%;
+            }
+            .title{
+            margin-top: 5%;
+            }
+            .search{
+            margin: 5% auto 0%;
+            text-align: center;
+            padding:0px;
+            }
+            .fa{
+            margin-left: 2%;
+            color: white;
+            cursor: pointer;
+            transition:color 300ms ease-in-out;
+            vertical-align:middle;
+            }
+            .search-box{
+            opacity: 0.5;
+            border:2px solid white;
+            background:none;
+            border-radius: 20px;
+            outline:none;
+            padding: 10px;
+            width: 400px;
+            color:white;
+            transition: border-color 300ms ease-in-out;
+            }
+            .search-box:hover, .search-box:focus{
+            border-color:#4790C9;
+            }
+            .fa:hover{
+            color:#4790C9;
+            }
+            i#fa{
+            background:none;
+            border:none;
+            }
+            .random-post{
+            text-align:center;
+            margin-top: 3%;
+            }
+            .btn{
+            cursor:pointer;
+            background-color:hsl(206, 68%, 15%);
+            border:none;
+            transition: background-color 500ms ease-in-out;
+            }
+            .result{
+            margin: 3% auto;
+            }
+            .panel a:hover, .panel a:focus{
+            text-decoration:none;
+            color:hsl(206, 68%, 41%)
+            }
+            .panel{
+            margin: auto 5%;
+            padding: 2% 0px 2% 1%;
+            background-color: white;
+            border-left: 10px solid hsl(206, 68%, 15%);
+            color: hsl(206, 68%, 21%);
+            border-radius: 5px;
+            }
+            .panel-heading{
+            font-weight:500;  
+            }
+            .panel-body{
+            color:hsl(206, 68%, 15%);
+            }
+        </style>
+    </head>
+    <body>
+    <div class="container">
+        <div class="title text-center">
+            <h1>The Wikipedia Viewer</h1>
+            <h4>A freecodecamp intermediate front-end development project</h4>
+        </div>
+        <div class="search">
+            <form id="search-form">
+                <input type="text" name="search" class="search-box" id="search-box" placeholder="Search.." required/> 
+                <i class="fa fa-search fa-3x" id="fa" title="search"></i>
+            </form>
+        </div>
+        <div class="random-post">
+            <a href="https://en.wikipedia.org/wiki/Special:Random" target="_blank"><button class="btn btn-primary"><h5>Open random article</h5></button></a>
+        </div>
+        <h3 id="search-query">Search Result:</h3>
+        <div class="result" id="result">
+        </div>
+    </div>
+    </body>
+</html>
